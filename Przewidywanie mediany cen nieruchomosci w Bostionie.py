@@ -7,7 +7,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 #import seaborn as sns
-
 from sklearn.metrics import r2_score
 
 columns = ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS',
@@ -52,3 +51,26 @@ better_features_mean, better_features_std = evaluate_models(data[other_columns],
 
 print(f'Pełny zestaw cech - Średni R^2: {full_features_mean:.4f}, Std: {full_features_std:.4f}')
 print(f'Wybrany zestaw cech - Średni R^2: {better_features_mean:.4f}, Std: {better_features_std:.4f}')
+
+
+#Przykładowy wiersz danych |['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS','RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT', 'MEDV']
+example = np.array([[0.00632, 18.0, 2.31, 0, 0.538, 6.575, 65.2, 4.09, 1, 296.0, 15.3, 396.9, 4.98]])
+example_df = pd.DataFrame(example, columns=columns_to_X) #Przekształcenie na data frame
+
+X = data[columns_to_X]
+y = data['MEDV']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+lr = LinearRegression()
+lr.fit(X_train_scaled, y_train)
+
+example_scaled = scaler.transform(example_df)
+
+predicted_price = lr.predict(example_scaled)
+
+print(f"Przewidywana cena: {predicted_price[0]}")
